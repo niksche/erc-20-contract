@@ -32,6 +32,12 @@ describe("CryptonToken", function () {
   })
 
   describe("Mint", function() {
+    it("Negative testing: should be reverted with error", async function () {
+      // ownersBalance = await CryptonTokenContract.balanceOf(owner.address);
+      expect(ownersBalance, "Balance before mint doesn't match").to.equal(BigNumber.from("0"));
+      await expect(CryptonTokenContract.connect(account1).mint(100)).to.be.revertedWith("");
+    })
+    
     it("Should increase totalSupply as well as owner's balance", async function () {
       ownersBalance = await CryptonTokenContract.balanceOf(owner.address);
       expect(ownersBalance, "Balance before mint doesn't match").to.equal(BigNumber.from("0"));
@@ -44,6 +50,10 @@ describe("CryptonToken", function () {
   })
 
   describe("Approve", function() {
+    it("Negative testing: should be reverted with error: ", async function() {
+      await expect(CryptonTokenContract.connect(account1).approve(owner.address, 1)).to.be.revertedWith("");
+    })
+
     it("Should update allowance according with function call", async function() {
       await CryptonTokenContract.connect(account1).approve(owner.address, 0);
       expect(await CryptonTokenContract.allowance(account1.address, owner.address)).to.equal(BigNumber.from("0"));
@@ -72,8 +82,25 @@ describe("CryptonToken", function () {
 
   describe("TransferFrom", function() {
     it("Negative testing: expecting function to revert with message", async function() {
-      await expect(CryptonTokenContract.transferFrom(account1.address, owner.address, 10)).to.be.revertedWith("asking too much money");
+      let tokensAmountToTransfer: number = 1;
+      await expect(CryptonTokenContract.transferFrom(account1.address, owner.address, tokensAmountToTransfer)).to.be.revertedWith("asking too much money");
     })
+
+    it("Negative testing: _from has not enough money", async function() {
+      await CryptonTokenContract.mint(10);
+      await CryptonTokenContract.approve(account1.address, 5);
+      await CryptonTokenContract.transfer(account1.address, 9);
+
+      let tokensAmountToTransfer: number = 4;
+      await expect(CryptonTokenContract.transferFrom(owner.address, account1.address, tokensAmountToTransfer)).to.be.revertedWith("_from has not enough money");
+    })
+
+    it("transferFrom should update balances of sender and reciever accordingly", async function() {
+      let tokensAmountToTransfer: number = 0;
+      const data = await CryptonTokenContract.transferFrom(owner.address, account1.address, tokensAmountToTransfer);
+      expect(data.value).to.equal(BigNumber.from("0"));
+    })
+
   })
 
   describe("Dump for all functions call", function() {
