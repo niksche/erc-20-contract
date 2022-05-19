@@ -2,8 +2,9 @@ import ERC20ABI from "../artifacts/contracts/ERC20.sol/ERC20.json";
 import { task } from "hardhat/config";
 import { ContractReceipt, ContractTransaction } from "ethers";
 
-task("transfer", "do transfer")
+task("transferFrom", "do transfer from address")
   .addParam("tokenAddres", "address of contract")
+  .addParam("from", "address from which to transfer")
   .addParam("to", "address to which do transfer")
   .addParam("value", "token amount to be transfered")
   .setAction(async (taskArgs, hre) => {
@@ -30,7 +31,8 @@ task("transfer", "do transfer")
       owner
     );
 
-    const transferTx: ContractTransaction = await CryptonToken.transfer(
+    const transferTx: ContractTransaction = await CryptonToken.transferFrom(
+      taskArgs.from,
       taskArgs.to,
       taskArgs.value
     );

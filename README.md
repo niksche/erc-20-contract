@@ -6,14 +6,14 @@ The project comes with a sample contract, a test for that contract, a sample scr
 
 Try running some of the following tasks:
 
-
-```shell 
+```shell
 
 npx hardhat transfer --token-addres 0x5FbDB2315678afecb367f032d93F642f64180aa3 --to 0x70997970C51812dc3A010C7d01b50e0d17dc79C8 --value 0 --network localhost
 
+npx hardhat transferFrom --token-addres 0x5FbDB2315678afecb367f032d93F642f64180aa3 --from 0x70997970C51812dc3A010C7d01b50e0d17dc79C8  --to 0x70997970C51812dc3A010C7d01b50e0d17dc79C8 --value 0 --network localhost
+
+npx hardhat approve --token-addres 0x5FbDB2315678afecb367f032d93F642f64180aa3 --owner 0x70997970C51812dc3A010C7d01b50e0d17dc79C8  --spender 0x70997970C51812dc3A010C7d01b50e0d17dc79C8 --value 0 --network localhost
 ```
-
-
 
 # Etherscan verification
 
@@ -35,9 +35,8 @@ npx hardhat verify --network rinkeby DEPLOYED_CONTRACT_ADDRESS "Hello, Hardhat!"
 
 For faster runs of your tests and scripts, consider skipping ts-node's type checking by setting the environment variable `TS_NODE_TRANSPILE_ONLY` to `1` in hardhat's environment. For more details see [the documentation](https://hardhat.org/guides/typescript.html#performance-optimizations).
 
+Style commands:
 
-
-Style commands: 
 ```shell
 npx hardhat accounts
 npx hardhat compile

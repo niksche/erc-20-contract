@@ -14,7 +14,7 @@ async function main() {
   // await hre.run('compile');
 
   // We get the contract to deploy
-  const ERC20TokenContract  = await ethers.getContractFactory("ERC20");
+  const ERC20TokenContract = await ethers.getContractFactory("ERC20");
   const ERC20Token = await ERC20TokenContract.deploy("CryptonCoin", "CRY", 26);
 
   await ERC20Token.deployed();

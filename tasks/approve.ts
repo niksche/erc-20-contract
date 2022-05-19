@@ -2,9 +2,9 @@ import ERC20ABI from "../artifacts/contracts/ERC20.sol/ERC20.json";
 import { task } from "hardhat/config";
 import { ContractReceipt, ContractTransaction } from "ethers";
 
-task("transfer", "do transfer")
+task("approve", "do transfer from address")
   .addParam("tokenAddres", "address of contract")
-  .addParam("to", "address to which do transfer")
+  .addParam("spender", "address which is alowed to spend owner's tokens")
   .addParam("value", "token amount to be transfered")
   .setAction(async (taskArgs, hre) => {
     const erc20abi = ERC20ABI.abi;
@@ -30,24 +30,23 @@ task("transfer", "do transfer")
       owner
     );
 
-    const transferTx: ContractTransaction = await CryptonToken.transfer(
-      taskArgs.to,
-      taskArgs.value
-    );
+    const transferTx: ContractTransaction = await CryptonToken.connect(
+      owner
+    ).approve(taskArgs.spender, taskArgs.value);
 
     const receipt: ContractReceipt = await transferTx.wait();
 
     const TransferEvent = receipt.events
       ? receipt.events[0]
-      : { args: { _from: "", _to: "", _value: "" } };
+      : { args: { _owner: "", _spender: "", _value: "" } };
 
     console.log(
-      "successfully transfered from ",
-      TransferEvent.args?._from,
-      "to",
-      TransferEvent.args?._to,
+      "successfully approved to spend",
       TransferEvent.args?._value.toString(),
       "of",
-      "CRT"
+      "CRT from ",
+      TransferEvent.args?._owner,
+      "by",
+      TransferEvent.args?._spender
     );
   });
