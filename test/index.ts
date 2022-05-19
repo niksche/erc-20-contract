@@ -15,7 +15,6 @@ describe("CryptonToken", function () {
   beforeEach(async function () {
     const erc20Factory = await ethers.getContractFactory("ERC20");
     CryptonTokenContract = await erc20Factory.deploy("Crypton coin", "CRP",1);
-    console.log(CryptonTokenContract.address);
     [owner, account1] = await ethers.getSigners();
   })
   
@@ -28,7 +27,6 @@ describe("CryptonToken", function () {
 
     it("Signer's balance should be zerro", async function() {
       ownersBalance = await CryptonTokenContract.balanceOf(owner.address);
-      console.log(ownersBalance);
       expect(ownersBalance, "owner balance should be equal to zerro").to.equal(BigNumber.from("0"));
     })
   })
@@ -42,7 +40,6 @@ describe("CryptonToken", function () {
       ownersBalance = await CryptonTokenContract.balanceOf(owner.address);
       totalSupply = await CryptonTokenContract.totalSupply();
       expect(ownersBalance, "Balance after mint doesn't match").to.equal(BigNumber.from("100"));
-      console.log("totalSupply", totalSupply);
     })
   })
 
@@ -55,18 +52,34 @@ describe("CryptonToken", function () {
     })
   })
 
+  describe("Transfer", function() {
+    it("Negative testing: sending more tokens that is on balance", async function() {
+      let tokensAmountToTransfer: number = 1;
+      await expect(CryptonTokenContract.transfer(account1.address, tokensAmountToTransfer)).to.be.revertedWith("Not enough money");
+    })
+
+    it("Negative testing: sending money to yourself", async function() {
+      let tokensAmountToTransfer: number = 0;
+      await expect(CryptonTokenContract.transfer(owner.address, tokensAmountToTransfer)).to.be.revertedWith("Transfering money to yourself");
+    })
+
+    it("transfer should update balances of sender and reciever accordingly", async function() {
+      let tokensAmountToTransfer: number = 0;
+      const data = await CryptonTokenContract.transfer(account1.address, tokensAmountToTransfer);
+      expect(data.value).to.equal(BigNumber.from("0"));
+    })
+  })
+
   describe("TransferFrom", function() {
-    it("Negative testing expecting function to revert with message", async function() {
+    it("Negative testing: expecting function to revert with message", async function() {
       await expect(CryptonTokenContract.transferFrom(account1.address, owner.address, 10)).to.be.revertedWith("asking too much money");
     })
   })
 
   describe("Dump for all functions call", function() {
     it("calling all function hoping pass the test", async function() {
-      await CryptonTokenContract.connect(account1).approve(owner.address, 0);
       await CryptonTokenContract.allowance(account1.address, owner.address);
       await CryptonTokenContract.transfer(account1.address, 0);
-      await CryptonTokenContract.transferFrom(account1.address, owner.address, 0);
     })
   })
 
