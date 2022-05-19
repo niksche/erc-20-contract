@@ -7,7 +7,7 @@ contract ERC20 {
     string private name;
     string private symbol;
     uint private decimals;
-    uint private ammount;
+    uint private amount;
     address private owner;
 
     mapping(address => uint) private balances;
@@ -15,7 +15,7 @@ contract ERC20 {
     // will it generate function allowanceMap ?
     mapping(address => mapping(address => uint)) private allowanceMap;
 
-    // event Transfer(address _from, address _to, uint _ammount);
+    // event Transfer(address _from, address _to, uint _amount);
     event Transfer(address indexed _from, address indexed _to, uint256 _value);
     event Approval(address indexed _owner, address indexed _spender, uint256 _value);
 
@@ -28,7 +28,7 @@ contract ERC20 {
 
     // Returns the total token supply.
     function totalSupply() public view returns (uint256) {
-        return ammount;
+        return amount;
     }
 
     // Returns the account balance of another account with address _owner.
@@ -77,6 +77,15 @@ contract ERC20 {
     // Returns the amount which _spender is still allowed to withdraw from _owner.
     function allowance(address _owner, address _spender) public view returns (uint256 remaining) {
         remaining = allowanceMap[_owner][_spender];
+    }
+
+
+    function mint(uint _amount) public returns (bool success) {
+        success = false;
+        require(msg.sender == owner, "Only owner can call this function");
+        amount += _amount;
+        balances[owner] += _amount;
+        success = true;
     }
 
 }
