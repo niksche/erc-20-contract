@@ -46,6 +46,21 @@ describe("CryptonToken", function () {
     })
   })
 
+  describe("Approve", function() {
+    it("Should update allowance according with function call", async function() {
+      await CryptonTokenContract.connect(account1).approve(owner.address, 0);
+      expect(await CryptonTokenContract.allowance(account1.address, owner.address)).to.equal(BigNumber.from("0"));
+      await CryptonTokenContract.connect(owner).transferFrom(account1.address, owner.address, 0);
+      expect(await CryptonTokenContract.allowance(account1.address, owner.address)).to.equal(BigNumber.from("0"));
+    })
+  })
+
+  describe("TransferFrom", function() {
+    it("Negative testing expecting function to revert with message", async function() {
+      await expect(CryptonTokenContract.transferFrom(account1.address, owner.address, 10)).to.be.revertedWith("asking too much money");
+    })
+  })
+
   describe("Dump for all functions call", function() {
     it("calling all function hoping pass the test", async function() {
       await CryptonTokenContract.connect(account1).approve(owner.address, 0);
