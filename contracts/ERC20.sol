@@ -3,11 +3,11 @@
 pragma solidity ^0.8.0;
 
 contract ERC20 {
-    string private name;
-    string private symbol;
-    uint256 private decimals;
-    uint256 private amount;
-    address private owner;
+    string public name;
+    string public symbol;
+    uint256 public decimals;
+    uint256 public amount;
+    address public owner;
 
     mapping(address => uint256) private balances;
 
